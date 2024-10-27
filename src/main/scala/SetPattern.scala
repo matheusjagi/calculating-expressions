@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 
 sealed trait SetExpr:
-    def evaluate(sets: Map[String, Set[Any]], universal: Set[Any] = Set(0,1,2,3,4,5,6,7,8,9)): Set[Any]
+    def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any]
     
 case class SetVar(name: String) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
@@ -9,24 +9,24 @@ case class SetVar(name: String) extends SetExpr:
 
 case class Union(left: SetExpr, right: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
-        left.evaluate(sets) union right.evaluate(sets)
+        left.evaluate(sets, universal) union right.evaluate(sets, universal)
 
 case class Intersection(left: SetExpr, right: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
-        left.evaluate(sets) intersect right.evaluate(sets)
+        left.evaluate(sets, universal) intersect right.evaluate(sets, universal)
 
 case class Difference(left: SetExpr, right: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
-        left.evaluate(sets) diff right.evaluate(sets)
+        left.evaluate(sets, universal) diff right.evaluate(sets, universal)
 
 case class SymmetricDifference(left: SetExpr, right: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
-        (left.evaluate(sets) diff right.evaluate(sets)) union
-        (right.evaluate(sets) diff left.evaluate(sets))
+        (left.evaluate(sets, universal) diff right.evaluate(sets, universal)) union
+        (right.evaluate(sets, universal) diff left.evaluate(sets, universal))
 
 case class CartesianProduct(left: SetExpr, right: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
-        left.evaluate(sets).flatMap(source => right.evaluate(sets).map(target => (source, target)))
+        left.evaluate(sets, universal).flatMap(source => right.evaluate(sets, universal).map(target => (source, target)))
 
 case class Complement(expr: SetExpr) extends SetExpr:
     def evaluate(sets: Map[String, Set[Any]], universal: Set[Any]): Set[Any] =
