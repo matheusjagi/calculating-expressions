@@ -14,12 +14,21 @@ def run(): Unit =
             val setValues: Set[Any] = StdIn.readLine().split(',').map(_.trim).toSet
 
             sets += (setName -> setValues)
-            println(s"\nOs conjuntos ate agora sao: $sets")
+            println(s"\nOs conjuntos até agora são: $sets")
         else
-            println("\nInforme a expressao que deseja calcular para os conjuntos (ex.:  A | (B & C) -> Respeite os espacos eos conjuntos): ")
+            println("\nNossas operações permitidas são:")
+            println("\t-> União (A | B)")
+            println("\t-> Interseção (A & B)")
+            println("\t-> Diferença (A - B)")
+            println("\t-> Diferença simétrica (A ^ B)")
+            println("\t-> Complemento (~A)")
+            println("\t-> Produto cartesiano (A * B)")
+            println("\t-> Conjunto das partes (P(A))")
+
+            println("\nInforme a expressão que deseja calcular para os conjuntos (ex.:  A | (B & C) -> Respeite os espacos eos conjuntos): ")
             val expression = StdIn.readLine()
             val result = SetParser.parse(expression).evaluate(sets)
-            println(s"\nO resultado da expressao [$expression] e: $result")
+            println(s"\nO resultado da expressão [$expression] e: $result")
 
             println("\n\nPara finalizar o programa digite 'q' ou ENTER para continuar")
             val quit = StdIn.readLine().toUpperCase()
